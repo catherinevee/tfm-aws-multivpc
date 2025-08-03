@@ -2,11 +2,11 @@
 # This module provides comprehensive connectivity between multiple AWS accounts, regions, and VPCs
 
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.13.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.2.0"
     }
   }
 }
@@ -20,6 +20,7 @@ resource "aws_ec2_transit_gateway" "main" {
   count = var.create_transit_gateway ? 1 : 0
 
   description                     = var.transit_gateway_description
+  amazon_side_asn                 = var.transit_gateway_amazon_side_asn
   default_route_table_association = var.transit_gateway_default_route_table_association
   default_route_table_propagation = var.transit_gateway_default_route_table_propagation
   auto_accept_shared_attachments  = var.transit_gateway_auto_accept_shared_attachments
@@ -27,7 +28,7 @@ resource "aws_ec2_transit_gateway" "main" {
   vpn_ecmp_support                = var.transit_gateway_vpn_ecmp_support
   multicast_support               = var.transit_gateway_multicast_support
 
-  tags = merge(var.common_tags, {
+  tags = merge(var.common_tags, var.transit_gateway_tags, {
     Name = "${var.name_prefix}-transit-gateway"
   })
 }
@@ -50,10 +51,30 @@ resource "aws_vpc" "vpcs" {
   cidr_block           = each.value.cidr_block
   enable_dns_hostnames = each.value.enable_dns_hostnames
   enable_dns_support   = each.value.enable_dns_support
+  instance_tenancy     = lookup(each.value, "instance_tenancy", "default")
+  enable_network_address_usage_metrics = lookup(each.value, "enable_network_address_usage_metrics", false)
+
+  # IPv6 Configuration
+  ipv6_cidr_block                                   = lookup(each.value, "ipv6_cidr_block", null)
+  ipv6_cidr_block_network_border_group             = lookup(each.value, "ipv6_cidr_block_network_border_group", null)
+  assign_generated_ipv6_cidr_block                 = lookup(each.value, "assign_generated_ipv6_cidr_block", false)
 
   tags = merge(var.common_tags, each.value.tags, {
     Name = "${var.name_prefix}-vpc-${each.key}"
   })
+}
+
+# Secondary CIDR blocks for VPCs
+resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidrs" {
+  for_each = {
+    for pair in setproduct(keys(var.vpcs), lookup(var.vpcs[pair[0]], "secondary_cidr_blocks", [])) : "${pair[0]}-${pair[1]}" => {
+      vpc_key = pair[0]
+      cidr    = pair[1]
+    }
+  }
+
+  vpc_id     = aws_vpc.vpcs[each.value.vpc_key].id
+  cidr_block = each.value.cidr
 }
 
 # Internet Gateways for VPCs that need internet access

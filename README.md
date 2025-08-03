@@ -2,7 +2,27 @@
 
 A comprehensive Terraform module for designing and implementing routing strategies and connectivity architecture across multiple AWS accounts, regions, and VPCs to support different connectivity patterns.
 
-## Features
+## 🗺️ Resource Map
+
+This module provisions and manages the following AWS resources:
+
+| Resource Type | Purpose | Dependencies |
+|--------------|---------|--------------|
+| `aws_ec2_transit_gateway` | Central hub for VPC and VPN connectivity | None |
+| `aws_ec2_transit_gateway_route_table` | Route tables for TGW traffic control | Transit Gateway |
+| `aws_vpc` | Virtual Private Clouds for resource isolation | None |
+| `aws_vpc_ipv4_cidr_block_association` | Secondary CIDR blocks for VPC expansion | VPC |
+| `aws_internet_gateway` | Internet access for public subnets | VPC |
+| `aws_ec2_transit_gateway_vpc_attachment` | Connect VPCs to Transit Gateway | VPC, Transit Gateway |
+| `aws_subnet` | Network segments within VPCs | VPC |
+| `aws_route_table` | Traffic routing control within VPCs | VPC |
+| `aws_route_table_association` | Link subnets to route tables | Subnet, Route Table |
+| `aws_vpc_peering_connection` | Direct VPC-to-VPC connectivity | VPCs |
+| `aws_ram_resource_share` | Cross-account resource sharing | None |
+| `aws_security_group` | Network security at instance level | VPC |
+| `aws_network_acl` | Network security at subnet level | VPC |
+
+## 🌟 Features
 
 - **Transit Gateway Integration**: Centralized connectivity hub for multiple VPCs
 - **Multi-Account Support**: Cross-account Transit Gateway sharing using AWS RAM
@@ -13,7 +33,15 @@ A comprehensive Terraform module for designing and implementing routing strategi
 - **Monitoring & Logging**: VPC Flow Logs and CloudWatch integration
 - **IPv6 Support**: Native IPv6 support for modern applications
 
-## Architecture Overview
+## 📋 Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 1.13.0 |
+| aws | ~> 6.2.0 |
+| terragrunt | >= 0.84.0 |
+
+## 🏗️ Architecture Overview
 
 This module supports multiple connectivity patterns:
 
@@ -22,6 +50,35 @@ This module supports multiple connectivity patterns:
 3. **Hybrid Approach**: Combination of Transit Gateway and VPC peering
 4. **Cross-Account**: Shared Transit Gateway across multiple AWS accounts
 5. **Multi-Region**: Support for resources across different AWS regions
+
+## 🔒 Security Features
+
+1. **Network Isolation**
+   - Dedicated route tables per VPC
+   - Custom NACLs for subnet-level security
+   - Security groups for instance-level control
+
+2. **Access Control**
+   - RAM-based resource sharing
+   - Cross-account access controls
+   - Principle of least privilege
+
+3. **Monitoring & Auditing**
+   - VPC Flow Logs integration
+   - CloudWatch metrics
+   - AWS CloudTrail integration
+
+## 💰 Cost Optimization
+
+1. **Resource Efficiency**
+   - Shared Transit Gateway for multiple VPCs
+   - Optional components (create only what's needed)
+   - Resource tagging for cost allocation
+
+2. **Network Cost Control**
+   - Strategic placement of NAT Gateways
+   - VPC Peering for direct connectivity
+   - Region-aware routing for data transfer optimization
 
 ## Usage
 
