@@ -1,8 +1,8 @@
 # AWS Multi-Account, Multi-Region, Multi-VPC Connectivity Module
 
-A comprehensive Terraform module for designing and implementing routing strategies and connectivity architecture across multiple AWS accounts, regions, and VPCs to support different connectivity patterns.
+An advanced Terraform module for designing and implementing routing strategies and connectivity architecture across multiple AWS accounts, regions, and VPCs to support different connectivity patterns.
 
-## 🗺️ Resource Map
+## Resource Map
 
 This module provisions and manages the following AWS resources:
 
@@ -22,18 +22,18 @@ This module provisions and manages the following AWS resources:
 | `aws_security_group` | Network security at instance level | VPC |
 | `aws_network_acl` | Network security at subnet level | VPC |
 
-## 🌟 Features
+## Features
 
 - **Transit Gateway Integration**: Centralized connectivity hub for multiple VPCs
 - **Multi-Account Support**: Cross-account Transit Gateway sharing using AWS RAM
 - **VPC Peering**: Direct VPC-to-VPC connectivity
 - **Flexible Routing**: Customizable route tables and routing strategies
-- **Security Groups & NACLs**: Comprehensive network security controls
+- **Security Groups & NACLs**: Network security controls
 - **Cost Optimization**: Built-in cost estimation and optimization features
 - **Monitoring & Logging**: VPC Flow Logs and CloudWatch integration
 - **IPv6 Support**: Native IPv6 support for modern applications
 
-## 📋 Requirements
+## Requirements
 
 | Name | Version |
 |------|---------|
@@ -41,7 +41,7 @@ This module provisions and manages the following AWS resources:
 | aws | ~> 6.2.0 |
 | terragrunt | >= 0.84.0 |
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 This module supports multiple connectivity patterns:
 
@@ -51,7 +51,7 @@ This module supports multiple connectivity patterns:
 4. **Cross-Account**: Shared Transit Gateway across multiple AWS accounts
 5. **Multi-Region**: Support for resources across different AWS regions
 
-## 🔒 Security Features
+## Security Features
 
 1. **Network Isolation**
    - Dedicated route tables per VPC
@@ -68,11 +68,11 @@ This module supports multiple connectivity patterns:
    - CloudWatch metrics
    - AWS CloudTrail integration
 
-## 💰 Cost Optimization
+## Cost Optimization
 
 1. **Resource Efficiency**
    - Shared Transit Gateway for multiple VPCs
-   - Optional components (create only what's needed)
+   - Optional components (create only what is needed)
    - Resource tagging for cost allocation
 
 2. **Network Cost Control**
